@@ -1,0 +1,39 @@
+<launch>
+<!-- for two turtlebots -->
+  <arg name="base"      value="$(optenv TURTLEBOT_BASE kobuki)"/> 
+  <arg name="battery"   value="$(optenv TURTLEBOT_BATTERY /proc/acpi/battery/BAT0)"/>  
+  <arg name="stacks"    value="$(optenv TURTLEBOT_STACKS hexagons)"/>  
+  <arg name="3d_sensor" value="$(optenv TURTLEBOT_3D_SENSOR kinect)"/>  
+
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <!-- BEGIN TURTLEBOT 1-->
+  <group ns= "turtlebot_1">
+    <arg name="robot_name" value="turtlebot_1"/>
+    <include file="$(find agents_gazebo)/launch/includes/agent.launch.xml" >
+    <arg name="initial_pose_x" value="0" />
+    <arg name="initial_pose_y" value="0" />
+    <arg name="initial_pose_z" value="0" />
+    <arg name="initial_pose_yaw" value="0" />
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+  </group>
+
+  <!-- BEGIN TURTLEBOT 2-->
+  <group ns="turtlebot_2">
+    <arg name="robot_name" value="turtlebot_2"/>
+    <include file="$(find agents_gazebo)/launch/includes/agent.launch.xml" >
+    <arg name="initial_pose_x" value="1" />
+    <arg name="initial_pose_y" value="0" />
+    <arg name="initial_pose_z" value="0" />
+    <arg name="initial_pose_yaw" value="3.1415926" />
+      <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+  </group>
+</launch>
+
+  <!-- BEGIN INTERCEPT NODE -->
+  <!-- published topic: pub_vel -> remap to /robot2/cmd_vel_mux/input/teleop -->
+  <!-- subscribed topic: sub_pos -> remap to /robot1/joint_states -->
+  <!-- but I think in order to do this. I need tf and refer to the tf tutorial -->

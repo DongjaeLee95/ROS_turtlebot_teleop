@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <include file="$(find turtlebot_gazebo_personal)/launch/turtlebot_world_personal.launch" >
+    <arg name="gui" default="true"/>
+    </include>
+
+    <include file="$(find turtlebot_teleop_personal)/launch/keyop.launch" />
+
+
+    <node pkg = "turtlebot_follower" name = "turtlebot_follower" type = "turtlebot_follower">
+        <param name="turtle1_name" value="turtlebot_1"/>
+        <param name="turtle2_name" value="turtlebot_2"/>
+
+        <param name="overall_frequency" value="1000"/>
+        <param name="gain_linear_p" value="2.0"/>
+        <param name="gain_angular_p" value="2.0"/>
+        <param name="gain_linear_d" value="0.1"/>
+        <param name="gain_angular_d" value="0.1"/>
+
+    <!-- this remap an arbitrary topic to the predefined topic -->
+	<remap from="/turtlebot_2/vel_teleop" to="/turtlebot_2/cmd_vel_mux/input/teleop"/>
+
+    </node>
+
+<!--
+    <node pkg = "turtlebot_follower" type = "new_frame_tf_broadcaster"
+	name = "broadcaster_frame" /> 
+-->
+    <!-- type should be the same name as "add_executable" in the CMakeLists -->
+</launch>
